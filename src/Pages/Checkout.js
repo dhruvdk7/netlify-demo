@@ -24,19 +24,18 @@ function Checkout() {
     const [, setOrderID] = useState(null);
 
 
-    const [products,] = useState([
-        {
-            name: 'Nike Dunk Low',
-            price: '325',
-            image: image1,
-            quantity: 1
-        },
-        {
-            name: 'Air Jordan 4 Retro',
-            price: '375',
-            image: image2,
-            quantity: 1
-        }
+    const [products,] = useState([{
+        name: 'Sneaker1',
+        price: '275',
+        image: image1,
+        quantity: 1
+    },
+    {
+        name: 'Sneaker 2',
+        price: '445',
+        image: image2,
+        quantity: 1
+    }
     ]);
     var subtotal = 0
 
@@ -44,27 +43,42 @@ function Checkout() {
         return products.map((product, index) => {
             subtotal += parseInt(product.price) * parseInt(product.quantity);
             return (
-                <div className="checkout-item" key={index}>
-                    <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                        <div style={{ position: 'relative', width: '70px', height: '70px' }}>
-                            <img src={product.image} alt="Product" className='cart-product-image' />
-                            <div className='checkout-quantity'>
-                                <div style={{ margin: 'auto' }}>{product.quantity}</div>
-                            </div>
+                <div className="checkout-item"
+                    key={index} >
+                    <div style={
+                        { display: 'flex', alignItems: 'center', width: '100%' }
+                    } >
+                        <div style={
+                            { position: 'relative', width: '70px', height: '70px' }
+                        } >
+                            <img src={product.image}
+                                alt="Product"
+                                className='cart-product-image' />
+                            <div className='checkout-quantity' >
+                                <div style={
+                                    { margin: 'auto' }
+                                } > {product.quantity} </div>
+                            </div >
                         </div>
-                        <div style={{ color: "#959595", marginLeft: '20px', width: '100%' }}>
-                            <div className="checkout-details">
-                                <div className='checkout-product-details'>
-                                    <div className="checkout-item-name" style={{ color: "#000", marginBottom: '15px' }}>
-                                        {product.name}
-                                    </div>
+                        <div style={
+                            { color: "#959595", marginLeft: '20px', width: '100%' }
+                        } >
+                            <div className="checkout-details" >
+                                <div className='checkout-product-details' >
+                                    <div className="checkout-item-name"
+                                        style={
+                                            { color: "#000", marginBottom: '15px' }
+                                        } > {product.name} </div>
+                                </div >
+                                <div className='checkout-item-price'
+                                    style={
+                                        { color: "#000" }
+                                    } >
+                                    $ {(parseInt(product.price) * parseInt(product.quantity)).toFixed(2)}
                                 </div>
-                                <div className='checkout-item-price' style={{ color: "#000" }}>
-                                    ${(parseInt(product.price) * parseInt(product.quantity)).toFixed(2)}
-                                </div>
-                            </div>
+                            </div >
                         </div>
-                    </div>
+                    </div >
                 </div>
             )
         })
@@ -78,15 +92,13 @@ function Checkout() {
     const createOrder = (data, actions) => {
         return actions.order
             .create({
-                purchase_units: [
-                    {
-                        description: "Payment for ",
-                        amount: {
-                            currency_code: "USD",
-                            value: (subtotal + 15).toFixed(2),
-                        },
+                purchase_units: [{
+                    description: "Payment for ",
+                    amount: {
+                        currency_code: "USD",
+                        value: (subtotal + 45).toFixed(2),
                     },
-                ],
+                },],
                 application_context: {
                     shipping_preference: "NO_SHIPPING",
                 },
@@ -121,83 +133,197 @@ function Checkout() {
         [success]
     );
 
-    return (
-        <>
-            <Header />
-            <div style={{ display: 'flex', alignItems: 'stretch', height: '100vh' }}>
-                <div style={{ width: '40%', paddingLeft: '250px', borderRight: '1px solid #c1c1c1', paddingTop: '150px' }}>
-                    <div style={{ fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }}>Contact Information</div>
-                    <div style={{ marginLeft: '10px' }}>johndoe@gmail.com</div>
-                    {onPayment
-                        ?
-                        <>
-                            <div style={{ fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }}>Payment Information</div>
-                            <div className="checkout-form">
-                                <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
-                                    <div className='selected-btn' onClick={() => toast.success("Payment Successful.")}>Cash on Delivery</div>
-                                </div>
-                                <div style={{ marginBlock: '15px', textAlign: 'center', fontStyle: 'italic', color: '#929292' }} >or</div>
-                                <PayPalScriptProvider options={{ "client-id": 'AQzW_bdiCPX0wlUygTaqwFYxuCz_gy0ydq1fmRGn6XnNq__-RMOsNLUOdDrvc-Sv19c1CR8yg6Ff_aUC' }}>
-                                    <PayPalButtons
-                                        style={{ layout: "vertical" }}
-                                        createOrder={createOrder}
-                                        onApprove={onApprove}
-                                        onError={onError}
-                                    />
-                                </PayPalScriptProvider>
-                                <div style={{ display: 'flex', justifyContent: 'end' }} onClick={() => setOnPayment(false)}>
-                                    <div className="selected-btn">Back to Shipping</div>
-                                </div>
-                            </div>
-                        </>
-                        :
-                        <>
-                            <div style={{ fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }}>Shipping Address</div>
-                            <div className="checkout-form">
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <input type="text" placeholder='First Name' value={firstName} onChange={e => setFirstName(e.target.value)} className="checkout-input" style={{ width: '100%', marginRight: '10px' }} />
-                                    <input type="text" placeholder='Last Name' value={lastName} onChange={e => setLastName(e.target.value)} className="checkout-input" style={{ width: '98%', marginLeft: '10px' }} />
-                                </div>
-                                <input type="text" placeholder='Address' value={address} onChange={e => setAddress(e.target.value)} className="checkout-input" style={{ width: '95%' }} />
-                                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                    <input type="text" placeholder='City' value={city} onChange={e => setCity(e.target.value)} className="checkout-input" style={{ width: '98%', marginRight: '10px' }} />
-                                    <input type="text" placeholder='Province' value={province} onChange={e => setProvince(e.target.value)} className="checkout-input" style={{ width: '98%', marginInline: '10px' }} />
-                                    <input type="text" placeholder='Postal Code' value={postalCode} onChange={e => setPostalCode(e.target.value)} className="checkout-input" style={{ width: '98%', marginLeft: '10px' }} />
-                                </div>
-                                <input type="text" placeholder='Phone (optional)' value={phone} onChange={e => setPhone(e.target.value)} className="checkout-input" style={{ width: '95%' }} />
-                                <div style={{ display: 'flex', justifyContent: 'end' }} onClick={() => setOnPayment(true)}>
-                                    <div className="selected-btn">Continue to Payment</div>
-                                </div>
-                            </div>
-                        </>
-                    }
-                </div>
-                <div style={{ backgroundColor: '#F6F6F6', flex: '1', paddingTop: '150px' }}>
-                    <div style={{ marginLeft: '20px', marginTop: '20px', width: "90%" }}>
-                        {renderProducts()}
-                        <div className='checkout-item'>
-                            <div className='checkout-total-item'>
-                                <div className='checkout-label'>Subtotal</div>
-                                <div className='checkout-value'>${subtotal.toFixed(2)}</div>
-                            </div>
-                            <div className='checkout-total-item'>
-                                <div className='checkout-label'>Shipping</div>
-                                <div className='checkout-value'>$15.00</div>
-                            </div>
-                            <div className='checkout-total-item'>
-                                <div className='checkout-total'>Total</div>
-                                <div className='checkout-total-value'><span style={{ fontSize: '13px', color: '#929292', fontWeight: '400', fontStyle: 'italic' }}>USD $</span> {(subtotal + 15).toFixed(2)}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ToastContainer
-                position="top-left"
-                autoClose={5000}
-            />
-        </>
-    )
+    return ( <
+            >
+        <
+            Header />
+        <
+            div style={
+                { display: 'flex', alignItems: 'stretch', height: '100vh' }
+            } >
+            <
+            div style={
+                    { width: '40%', paddingLeft: '250px', borderRight: '1px solid #c1c1c1', paddingTop: '150px' }
+                } >
+                <
+            div style={
+                        { fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }
+                    } > Contact Information < /div> <
+            div style={
+                            { marginLeft: '10px' }
+                        } > johndoe @gmail.com < /div> {
+                            onPayment ?
+            <
+            >
+                                    <
+            div style={
+                                            { fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }
+                                        } > Payment Information < /div> <
+            div className="checkout-form" >
+                                            <
+            div style={
+                                                    { marginTop: '20px', display: 'flex', justifyContent: 'center' }
+                                                } >
+                                                <
+            div className='selected-btn'
+                                                    onClick={
+                                                        () => toast.success("Payment Successful.")
+                                                    } > Cash on Delivery < /div> < /
+            div > <
+            div style={
+                                                            { marginBlock: '15px', textAlign: 'center', fontStyle: 'italic', color: '#929292' }
+                                                        } > or < /div> <
+            PayPalScriptProvider options={
+                                                                { "client-id": 'AQzW_bdiCPX0wlUygTaqwFYxuCz_gy0ydq1fmRGn6XnNq__-RMOsNLUOdDrvc-Sv19c1CR8yg6Ff_aUC' }
+                                                            } >
+                                                            <
+                                                                PayPalButtons style={
+                                                                    { layout: "vertical" }
+                                                                }
+                                                                createOrder={createOrder}
+                                                                onApprove={onApprove}
+                                                                onError={onError}
+                                                            /> < /
+            PayPalScriptProvider > <
+            div style={
+                                                                    { display: 'flex', justifyContent: 'end' }
+                                                                }
+                                                                onClick={
+                                                                    () => setOnPayment(false)
+                                                                } >
+                                                                <
+            div className="selected-btn" > Back to Shipping < /div> < /
+            div > <
+            /div> < />
+                                                                    :
+            <
+            >
+                                                                        <
+            div style={
+                                                                                { fontSize: '15px', fontWeight: '600', marginTop: '40px', marginBottom: '5px' }
+                                                                            } > Shipping Address < /div> <
+            div className="checkout-form" >
+                                                                                <
+            div style={
+                                                                                        { display: 'flex', justifyContent: 'center' }
+                                                                                    } >
+                                                                                    <
+                                                                                        input type="text"
+                                                                                        placeholder='First Name'
+                                                                                        value={firstName}
+                                                                                        onChange={e => setFirstName(e.target.value)}
+                                                                                        className="checkout-input"
+                                                                                        style={
+                                                                                            { width: '100%', marginRight: '10px' }
+                                                                                        }
+                                                                                    /> <
+                                                                                        input type="text"
+                                                                                        placeholder='Last Name'
+                                                                                        value={lastName}
+                                                                                        onChange={e => setLastName(e.target.value)}
+                                                                                        className="checkout-input"
+                                                                                        style={
+                                                                                            { width: '98%', marginLeft: '10px' }
+                                                                                        }
+                                                                                    /> < /
+            div > <
+                                                                                        input type="text"
+                                                                                        placeholder='Address'
+                                                                                        value={address}
+                                                                                        onChange={e => setAddress(e.target.value)}
+                                                                                        className="checkout-input"
+                                                                                        style={
+                                                                                            { width: '95%' }
+                                                                                        }
+                                                                                    /> <
+            div style={
+                                                                                            { display: 'flex', justifyContent: 'center' }
+                                                                                        } >
+                                                                                        <
+                                                                                            input type="text"
+                                                                                            placeholder='City'
+                                                                                            value={city}
+                                                                                            onChange={e => setCity(e.target.value)}
+                                                                                            className="checkout-input"
+                                                                                            style={
+                                                                                                { width: '98%', marginRight: '10px' }
+                                                                                            }
+                                                                                        /> <
+                                                                                            input type="text"
+                                                                                            placeholder='Province'
+                                                                                            value={province}
+                                                                                            onChange={e => setProvince(e.target.value)}
+                                                                                            className="checkout-input"
+                                                                                            style={
+                                                                                                { width: '98%', marginInline: '10px' }
+                                                                                            }
+                                                                                        /> <
+                                                                                            input type="text"
+                                                                                            placeholder='Postal Code'
+                                                                                            value={postalCode}
+                                                                                            onChange={e => setPostalCode(e.target.value)}
+                                                                                            className="checkout-input"
+                                                                                            style={
+                                                                                                { width: '98%', marginLeft: '10px' }
+                                                                                            }
+                                                                                        /> < /
+            div > <
+                                                                                            input type="text"
+                                                                                            placeholder='Phone (optional)'
+                                                                                            value={phone}
+                                                                                            onChange={e => setPhone(e.target.value)}
+                                                                                            className="checkout-input"
+                                                                                            style={
+                                                                                                { width: '95%' }
+                                                                                            }
+                                                                                        /> <
+            div style={
+                                                                                                { display: 'flex', justifyContent: 'end' }
+                                                                                            }
+                                                                                            onClick={
+                                                                                                () => setOnPayment(true)
+                                                                                            } >
+                                                                                            <
+            div className="selected-btn" > Continue to Payment < /div> < /
+            div > <
+            /div> < />
+        } <
+        /div> <
+    div style={
+                                                                                                        { backgroundColor: '#F6F6F6', flex: '1', paddingTop: '150px' }
+                                                                                                    } >
+                                                                                                    <
+        div style={
+                                                                                                            { marginLeft: '20px', marginTop: '20px', width: "90%" }
+                                                                                                        } > {renderProducts()} <
+        div className='checkout-item' >
+                                                                                                            <
+        div className='checkout-total-item' >
+                                                                                                                <
+        div className='checkout-label' > Subtotal < /div> <
+    div className='checkout-value' > $ {subtotal.toFixed(2)} < /div> < /
+    div > <
+        div className='checkout-total-item' >
+                                                                                                                            <
+        div className='checkout-label' > Shipping < /div> <
+    div className='checkout-value' > $15 .00 < /div> < /
+    div > <
+        div className='checkout-total-item' >
+                                                                                                                                        <
+        div className='checkout-total' > Total < /div> <
+                                                                                                                                                div className='checkout-total-value' > < span style={
+                                                                                                                                                    { fontSize: '13px', color: '#929292', fontWeight: '400', fontStyle: 'italic' }
+                                                                                                                                                } > USD $ < /span> {(subtotal + 15).toFixed(2)}</div >
+                                                                                                                                            <
+        /div> < /
+    div > <
+        /div> < /
+    div > <
+        /div> <
+                                                                                                                                                ToastContainer position="top-left"
+                                                                                                                                                autoClose={5000}
+                                                                                                                                            /> < />
+                                                                                                                                            )
 }
 
-export default Checkout;
+                                                                                                                                            export default Checkout;
